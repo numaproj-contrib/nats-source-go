@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"nats-source-go/pkg/config"
+	"nats-source-go/pkg/utils"
 )
 
 type TestReadRequest struct {
@@ -47,7 +48,7 @@ func Test_Single(t *testing.T) {
 		Queue:   testQueue,
 	}
 
-	ns, err := New(config)
+	ns, err := New(config, WithLogger(utils.NewLogger()))
 	defer ns.Close()
 	assert.NoError(t, err)
 	assert.NotNil(t, ns)
@@ -85,12 +86,12 @@ func Test_Multiple(t *testing.T) {
 		Queue:   testQueue,
 	}
 
-	ns1, err := New(config)
+	ns1, err := New(config, WithLogger(utils.NewLogger()))
 	defer ns1.Close()
 	assert.NoError(t, err)
 	assert.NotNil(t, ns1)
 
-	ns2, err := New(config)
+	ns2, err := New(config, WithLogger(utils.NewLogger()))
 	defer ns2.Close()
 	assert.NoError(t, err)
 	assert.NotNil(t, ns2)

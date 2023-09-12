@@ -1,5 +1,9 @@
+.PHONY: test
+test:
+	go test ./... -race -short -v -timeout 60s
+
 .PHONY: build
-build:
+build: test
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o ./dist/nats-source main.go
 
 .PHONY: image
