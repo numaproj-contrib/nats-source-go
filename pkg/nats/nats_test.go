@@ -14,7 +14,7 @@ import (
 	sourcesdk "github.com/numaproj/numaflow-go/pkg/sourcer"
 	"github.com/stretchr/testify/assert"
 
-	"numaflow-nats-source/pkg/config"
+	"nats-source-go/pkg/config"
 )
 
 type TestReadRequest struct {

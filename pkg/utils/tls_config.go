@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"os"
 
-	"numaflow-nats-source/pkg/config"
+	"nats-source-go/pkg/config"
 )
 
 // TODO - unit test the following function
 
-// GetTLSConfig is a utility function to translate a nats tls config to tls.Config
+// GetTLSConfig is a utility function to translate a NATS tls config to tls.Config
 func GetTLSConfig(config *config.TLS, reader VolumeReader) (*tls.Config, error) {
 	if config == nil {
 		return nil, nil

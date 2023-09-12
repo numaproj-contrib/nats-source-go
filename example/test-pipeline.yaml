@@ -17,7 +17,7 @@ spec:
       source:
         udsource:
           container:
-            image: quay.io/numaio/numaflow-source/nats-source:v0.5.2
+            image: quay.io/numaio/numaflow-source/nats-source-go:v0.5.0
             volumeMounts:
               - name: my-config-mount
                 mountPath: /etc/config

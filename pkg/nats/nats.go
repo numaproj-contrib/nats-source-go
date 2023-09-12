@@ -10,8 +10,8 @@ import (
 	sourcesdk "github.com/numaproj/numaflow-go/pkg/sourcer"
 	"go.uber.org/zap"
 
-	"numaflow-nats-source/pkg/config"
-	"numaflow-nats-source/pkg/utils"
+	"nats-source-go/pkg/config"
+	"nats-source-go/pkg/utils"
 )
 
 const (
@@ -33,13 +33,13 @@ type natsSource struct {
 
 	volumeReader utils.VolumeReader
 
-	logger *zap.Logger
+	logger *zap.SugaredLogger
 }
 
 type Option func(*natsSource) error
 
 // WithLogger is used to return logger information
-func WithLogger(l *zap.Logger) Option {
+func WithLogger(l *zap.SugaredLogger) Option {
 	return func(o *natsSource) error {
 		o.logger = l
 		return nil
@@ -55,13 +55,6 @@ func New(c *config.Config, opts ...Option) (*natsSource, error) {
 			return nil, err
 		}
 	}
-	if n.logger == nil {
-		var err error
-		n.logger, err = zap.NewDevelopment()
-		if err != nil {
-			return nil, fmt.Errorf("failed to create logger, %w", err)
-		}
-	}
 
 	n.messages = make(chan *Message, n.bufferSize)
 	n.volumeReader = utils.NewNatsVolumeReader(utils.SecretVolumePath)
@@ -70,10 +63,10 @@ func New(c *config.Config, opts ...Option) (*natsSource, error) {
 		natslib.MaxReconnects(-1),
 		natslib.ReconnectWait(3 * time.Second),
 		natslib.DisconnectHandler(func(c *natslib.Conn) {
-			n.logger.Info("Nats disconnected")
+			n.logger.Info("NATS disconnected")
 		}),
 		natslib.ReconnectHandler(func(c *natslib.Conn) {
-			n.logger.Info("Nats reconnected")
+			n.logger.Info("NATS reconnected")
 		}),
 	}
 
@@ -124,7 +117,7 @@ func New(c *config.Config, opts ...Option) (*natsSource, error) {
 		n.natsConn = conn
 	}
 
-	n.logger.Info(fmt.Sprintf("Subscribing to subject %s with queue %s", c.Subject, c.Queue))
+	n.logger.Infof("Subscribing to subject %s with queue %s", c.Subject, c.Queue)
 	if sub, err := n.natsConn.QueueSubscribe(c.Subject, c.Queue, func(msg *natslib.Msg) {
 		readOffset := uuid.New().String()
 		m := &Message{
@@ -140,7 +133,7 @@ func New(c *config.Config, opts ...Option) (*natsSource, error) {
 	} else {
 		n.sub = sub
 	}
-	n.logger.Info("Nats source server started")
+	n.logger.Info("NATS source server started")
 	return n, nil
 }
 
@@ -173,7 +166,7 @@ func (n *natsSource) Read(_ context.Context, readRequest sourcesdk.ReadRequest, 
 
 // Ack acknowledges the data from the source.
 func (n *natsSource) Ack(_ context.Context, request sourcesdk.AckRequest) {
-	// Ack is a no-op for the Nats source.
+	// Ack is a no-op for the NATS source.
 }
 
 func (n *natsSource) Close() error {
@@ -182,6 +175,6 @@ func (n *natsSource) Close() error {
 		n.logger.Error("Failed to unsubscribe nats subscription", zap.Error(err))
 	}
 	n.natsConn.Close()
-	n.logger.Info("Nats source server shutdown")
+	n.logger.Info("NATS source server shutdown")
 	return nil
 }

@@ -3,41 +3,41 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/numaproj/numaflow-go/pkg/sourcer"
 
-	"numaflow-nats-source/pkg/config"
-	"numaflow-nats-source/pkg/nats"
-	"numaflow-nats-source/pkg/utils"
+	"nats-source-go/pkg/config"
+	"nats-source-go/pkg/nats"
+	"nats-source-go/pkg/utils"
 )
 
 func main() {
+	logger := utils.NewLogger()
 	// Get the config file path and format from env vars
 	var format string
 	format, ok := os.LookupEnv("CONFIG_FORMAT")
 	if !ok {
-		log.Printf("CONFIG_FORMAT not set, defaulting to yaml")
+		logger.Info("CONFIG_FORMAT not set, defaulting to yaml")
 		format = "yaml"
 	}
 
 	config, err := getConfigFromFile(format)
 	if err != nil {
-		log.Panic("Failed to parse config file : ", err)
+		logger.Panic("Failed to parse config file : ", err)
 	} else {
-		log.Printf("Successfully parsed config file")
+		logger.Info("Successfully parsed config file")
 	}
 
-	natsSrc, err := nats.New(config)
+	natsSrc, err := nats.New(config, nats.WithLogger(logger))
 	if err != nil {
-		log.Panic("Failed to create nats source : ", err)
+		logger.Panic("Failed to create nats source : ", err)
 	}
 	defer natsSrc.Close()
 
 	err = sourcer.NewServer(natsSrc).Start(context.Background())
 	if err != nil {
-		log.Panic("Failed to start source server : ", err)
+		logger.Panic("Failed to start source server : ", err)
 	}
 }
 
