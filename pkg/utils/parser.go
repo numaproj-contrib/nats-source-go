@@ -1,24 +1,25 @@
-package config
+package utils
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
 
+	"github.com/numaproj/numaflow/pkg/apis/numaflow/v1alpha1"
 	"gopkg.in/yaml.v2"
 )
 
-// Parser is an interface that defines methods to parse and un-parse Config objects.
+// Parser is an interface that defines methods to parse and un-parse NATS source configuration strings
 type Parser interface {
-	Parse(configString string) (*Config, error)
-	UnParse(config *Config) (string, error)
+	Parse(configString string) (*v1alpha1.NatsSource, error)
+	UnParse(config *v1alpha1.NatsSource) (string, error)
 }
 
 // YAMLConfigParser is a parser for YAML formatted configuration strings
 type YAMLConfigParser struct{}
 
-func (p *YAMLConfigParser) Parse(configString string) (*Config, error) {
-	c := &Config{}
+func (p *YAMLConfigParser) Parse(configString string) (*v1alpha1.NatsSource, error) {
+	c := &v1alpha1.NatsSource{}
 	err := yaml.Unmarshal([]byte(configString), c)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse config string: %w", err)
@@ -26,7 +27,7 @@ func (p *YAMLConfigParser) Parse(configString string) (*Config, error) {
 	return c, nil
 }
 
-func (p *YAMLConfigParser) UnParse(config *Config) (string, error) {
+func (p *YAMLConfigParser) UnParse(config *v1alpha1.NatsSource) (string, error) {
 	if config == nil {
 		return "", errors.New("config cannot be nil")
 	}
@@ -40,8 +41,8 @@ func (p *YAMLConfigParser) UnParse(config *Config) (string, error) {
 // JSONConfigParser is a parser for JSON formatted configuration strings.
 type JSONConfigParser struct{}
 
-func (p *JSONConfigParser) Parse(configString string) (*Config, error) {
-	c := &Config{}
+func (p *JSONConfigParser) Parse(configString string) (*v1alpha1.NatsSource, error) {
+	c := &v1alpha1.NatsSource{}
 	err := json.Unmarshal([]byte(configString), c)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse config string: %w", err)
@@ -49,7 +50,7 @@ func (p *JSONConfigParser) Parse(configString string) (*Config, error) {
 	return c, nil
 }
 
-func (p *JSONConfigParser) UnParse(config *Config) (string, error) {
+func (p *JSONConfigParser) UnParse(config *v1alpha1.NatsSource) (string, error) {
 	if config == nil {
 		return "", errors.New("config cannot be nil")
 	}

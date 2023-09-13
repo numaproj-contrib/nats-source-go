@@ -105,7 +105,7 @@ The configuration contains the following fields:
 
 Please notice that the fields declared above isn't the exhaustive list of all the fields
 that can be specified in the NATS source configuration.
-For more information, please refer to the [NATS Source Configuration Struct](./pkg/config/config.go).
+For more information, please refer to the [Numaflow NATS Source API](https://numaflow.numaproj.io/APIs/#numaflow.numaproj.io/v1alpha1.NatsSource).
 
 ### 3. Specify the NATS Source in the Pipeline
 Name your NATS Configuration ConfigMap as `nats-config.yaml` and mount it to the NATS source pod as a volume under path `/etc/config`.

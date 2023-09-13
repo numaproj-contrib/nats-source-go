@@ -8,9 +8,9 @@ import (
 	"github.com/google/uuid"
 	natslib "github.com/nats-io/nats.go"
 	sourcesdk "github.com/numaproj/numaflow-go/pkg/sourcer"
+	"github.com/numaproj/numaflow/pkg/apis/numaflow/v1alpha1"
 	"go.uber.org/zap"
 
-	"nats-source-go/pkg/config"
 	"nats-source-go/pkg/utils"
 )
 
@@ -46,7 +46,7 @@ func WithLogger(l *zap.SugaredLogger) Option {
 	}
 }
 
-func New(c *config.Config, opts ...Option) (*natsSource, error) {
+func New(c *v1alpha1.NatsSource, opts ...Option) (*natsSource, error) {
 	n := &natsSource{
 		bufferSize: defaultBufferSize,
 	}

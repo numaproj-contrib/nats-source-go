@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/numaproj/numaflow-go/pkg/sourcer"
+	"github.com/numaproj/numaflow/pkg/apis/numaflow/v1alpha1"
 
-	"nats-source-go/pkg/config"
 	"nats-source-go/pkg/nats"
 	"nats-source-go/pkg/utils"
 )
@@ -41,16 +41,16 @@ func main() {
 	}
 }
 
-func getConfigFromFile(format string) (*config.Config, error) {
+func getConfigFromFile(format string) (*v1alpha1.NatsSource, error) {
 	if format == "yaml" {
-		parser := &config.YAMLConfigParser{}
+		parser := &utils.YAMLConfigParser{}
 		content, err := os.ReadFile(fmt.Sprintf("%s/nats-config.yaml", utils.ConfigVolumePath))
 		if err != nil {
 			return nil, err
 		}
 		return parser.Parse(string(content))
 	} else if format == "json" {
-		parser := &config.JSONConfigParser{}
+		parser := &utils.JSONConfigParser{}
 		content, err := os.ReadFile(fmt.Sprintf("%s/nats-config.json", utils.ConfigVolumePath))
 		if err != nil {
 			return nil, err

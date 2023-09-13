@@ -1,4 +1,4 @@
-package config
+package utils
 
 import (
 	"reflect"
@@ -7,6 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	corev1 "k8s.io/api/core/v1"
+
+	"github.com/numaproj/numaflow/pkg/apis/numaflow/v1alpha1"
 )
 
 func TestConfigParser_UnParseThenParse(t *testing.T) {
@@ -15,15 +17,15 @@ func TestConfigParser_UnParseThenParse(t *testing.T) {
 		&YAMLConfigParser{},
 	}
 	for _, parser := range parsers {
-		testConfig := &Config{
+		c := &v1alpha1.NatsSource{
 			URL:     "nats://localhost:4222",
 			Subject: "test",
 			Queue:   "test",
-			TLS: &TLS{
+			TLS: &v1alpha1.TLS{
 				InsecureSkipVerify: true,
 			},
-			Auth: &Auth{
-				Basic: &BasicAuth{
+			Auth: &v1alpha1.NatsAuth{
+				Basic: &v1alpha1.BasicAuth{
 					User: &corev1.SecretKeySelector{
 						LocalObjectReference: corev1.LocalObjectReference{
 							Name: "test",
@@ -33,11 +35,11 @@ func TestConfigParser_UnParseThenParse(t *testing.T) {
 				},
 			},
 		}
-		configStr, err := parser.UnParse(testConfig)
+		configStr, err := parser.UnParse(c)
 		assert.NoError(t, err)
 		config, err := parser.Parse(configStr)
 		assert.NoError(t, err)
-		assert.Equal(t, testConfig, config)
+		assert.Equal(t, c, config)
 	}
 }
 
@@ -58,28 +60,36 @@ func TestConfigParser_ParseErrScenarios(t *testing.T) {
 
 func TestConfigParser_YAML(t *testing.T) {
 	yamlStr := `
-url: nats
-subject: test-subject
-queue: my-queue
+url: nats://localhost:4222
+subject: test
+queue: test
+tls:
+  insecureskipverify: true
 auth:
-  token:
-    localobjectreference:
-      name: nats-auth-fake-token
-    key: fake-token
+  basic:
+    user:
+      localobjectreference:
+        name: test
+      key: test
 `
 	parser := &YAMLConfigParser{}
 	config, err := parser.Parse(yamlStr)
 	assert.NoError(t, err)
-	assert.True(t, reflect.DeepEqual(&Config{
-		URL:     "nats",
-		Subject: "test-subject",
-		Queue:   "my-queue",
-		Auth: &Auth{
-			Token: &corev1.SecretKeySelector{
-				LocalObjectReference: corev1.LocalObjectReference{
-					Name: "nats-auth-fake-token",
+	assert.True(t, reflect.DeepEqual(&v1alpha1.NatsSource{
+		URL:     "nats://localhost:4222",
+		Subject: "test",
+		Queue:   "test",
+		TLS: &v1alpha1.TLS{
+			InsecureSkipVerify: true,
+		},
+		Auth: &v1alpha1.NatsAuth{
+			Basic: &v1alpha1.BasicAuth{
+				User: &corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: "test",
+					},
+					Key: "test",
 				},
-				Key: "fake-token",
 			},
 		},
 	}, config))
@@ -88,30 +98,40 @@ auth:
 func TestConfigParser_JSON(t *testing.T) {
 	jsonStr := `
 {
-  "url":"nats",
-  "subject":"test-subject",
-  "queue":"my-queue",
-  "auth":{
-    "token":{
-      "name":"nats-auth-fake-token",
-      "key":"fake-token"
-    }
-  }
+   "url":"nats://localhost:4222",
+   "subject":"test",
+   "queue":"test",
+   "tls":{
+      "insecureSkipVerify":true
+   },
+   "auth":{
+      "basic":{
+         "user":{
+            "name":"test",
+            "key":"test"
+         }
+      }
+   }
 }
 `
 	parser := &JSONConfigParser{}
 	config, err := parser.Parse(jsonStr)
 	assert.NoError(t, err)
-	assert.True(t, reflect.DeepEqual(&Config{
-		URL:     "nats",
-		Subject: "test-subject",
-		Queue:   "my-queue",
-		Auth: &Auth{
-			Token: &corev1.SecretKeySelector{
-				LocalObjectReference: corev1.LocalObjectReference{
-					Name: "nats-auth-fake-token",
+	assert.True(t, reflect.DeepEqual(&v1alpha1.NatsSource{
+		URL:     "nats://localhost:4222",
+		Subject: "test",
+		Queue:   "test",
+		TLS: &v1alpha1.TLS{
+			InsecureSkipVerify: true,
+		},
+		Auth: &v1alpha1.NatsAuth{
+			Basic: &v1alpha1.BasicAuth{
+				User: &corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: "test",
+					},
+					Key: "test",
 				},
-				Key: "fake-token",
 			},
 		},
 	}, config))

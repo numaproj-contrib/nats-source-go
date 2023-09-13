@@ -12,9 +12,9 @@ import (
 	natstestserver "github.com/nats-io/nats-server/v2/test"
 	natslib "github.com/nats-io/nats.go"
 	sourcesdk "github.com/numaproj/numaflow-go/pkg/sourcer"
+	"github.com/numaproj/numaflow/pkg/apis/numaflow/v1alpha1"
 	"github.com/stretchr/testify/assert"
 
-	"nats-source-go/pkg/config"
 	"nats-source-go/pkg/utils"
 )
 
@@ -42,7 +42,7 @@ func Test_Single(t *testing.T) {
 	testSubject := "test-single"
 	testQueue := "test-queue-single"
 
-	config := &config.Config{
+	config := &v1alpha1.NatsSource{
 		URL:     url,
 		Subject: testSubject,
 		Queue:   testQueue,
@@ -80,7 +80,7 @@ func Test_Multiple(t *testing.T) {
 	testSubject := "test-single"
 	testQueue := "test-queue-single"
 
-	config := &config.Config{
+	config := &v1alpha1.NatsSource{
 		URL:     url,
 		Subject: testSubject,
 		Queue:   testQueue,
