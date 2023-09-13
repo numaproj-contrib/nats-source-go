@@ -139,8 +139,8 @@ func New(c *config.Config, opts ...Option) (*natsSource, error) {
 
 // Pending returns the number of pending records.
 func (n *natsSource) Pending(_ context.Context) int64 {
-	// The nats source always returns zero to indicate no pending records.
-	return 0
+	// Pending is not supported for Nats for now, returning -1 to indicate pending is not available.
+	return -1
 }
 
 func (n *natsSource) Read(_ context.Context, readRequest sourcesdk.ReadRequest, messageCh chan<- sourcesdk.Message) {
