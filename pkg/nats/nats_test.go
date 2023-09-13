@@ -64,7 +64,7 @@ func Test_Single(t *testing.T) {
 
 	// Prepare a channel to receive messages
 	messageCh := make(chan sourcesdk.Message, 10)
-	ns.Read(ctx, TestReadRequest{count: 3, timeout: time.Second}, messageCh)
+	ns.Read(ctx, TestReadRequest{count: 5, timeout: time.Second}, messageCh)
 	assert.NoError(t, err)
 	assert.Equal(t, 3, len(messageCh))
 }
