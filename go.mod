@@ -6,7 +6,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/nats-io/nats-server/v2 v2.9.22
 	github.com/nats-io/nats.go v1.28.0
-	github.com/numaproj/numaflow-go v0.5.0
+	github.com/numaproj/numaflow-go v0.5.1-0.20230912211616-62600351d97f
 	github.com/stretchr/testify v1.8.2
 	go.uber.org/zap v1.25.0
 	gopkg.in/yaml.v2 v2.4.0

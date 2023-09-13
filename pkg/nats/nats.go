@@ -138,7 +138,7 @@ func New(c *config.Config, opts ...Option) (*natsSource, error) {
 }
 
 // Pending returns the number of pending records.
-func (n *natsSource) Pending(_ context.Context) uint64 {
+func (n *natsSource) Pending(_ context.Context) int64 {
 	// The nats source always returns zero to indicate no pending records.
 	return 0
 }
@@ -165,7 +165,7 @@ func (n *natsSource) Read(_ context.Context, readRequest sourcesdk.ReadRequest, 
 }
 
 // Ack acknowledges the data from the source.
-func (n *natsSource) Ack(_ context.Context, request sourcesdk.AckRequest) {
+func (n *natsSource) Ack(_ context.Context, _ sourcesdk.AckRequest) {
 	// Ack is a no-op for the NATS source.
 }
 

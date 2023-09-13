@@ -5,6 +5,7 @@ that facilitates reading messages from a [NATS](https://nats.io/) server.
 - [Quick Start](#Quick-Start)
 - [Using NATS Source in Your Numaflow Pipeline](#how-to-use-the-nats-source-in-your-own-numaflow-pipeline)
 - [JSON Configuration](#using-json-format-to-specify-the-nats-source-configuration)
+- [Debugging NATS Source](#debugging-nats-source)
 
 ## Quick Start
 This quick start guide will help you to set up and run a NATS source in a Numaflow pipeline on your local kube cluster. Follow the steps below to get started:
@@ -202,3 +203,17 @@ source:
 ```
 
 Remember to set the `CONFIG_FORMAT` environment variable to `json`.
+
+## Debugging NATS Source
+To debug the NATS source, you can set the `NUMAFLOW_DEBUG` environment variable to `true` in the NATS source container.
+```yaml
+source:
+  udsource:
+    container:
+      image: quay.io/numaio/numaflow-source/nats-source-go:v0.5.0
+      env:
+        - name: NUMAFLOW_DEBUG
+          value: "true"
+      volumeMounts:
+        ...
+```
