@@ -5,6 +5,7 @@ that facilitates reading messages from a [NATS](https://nats.io/) server.
 - [Quick Start](#Quick-Start)
 - [Using NATS Source in Your Numaflow Pipeline](#how-to-use-the-nats-source-in-your-own-numaflow-pipeline)
 - [JSON Configuration](#using-json-format-to-specify-the-nats-source-configuration)
+- [Environment Variables Configuration](#using-environment-variables-to-specify-the-nats-source-configuration)
 - [Debugging NATS Source](#debugging-nats-source)
 
 ## Quick Start
@@ -203,6 +204,55 @@ source:
 ```
 
 Remember to set the `CONFIG_FORMAT` environment variable to `json`.
+
+## Using Environment Variables to Specify the NATS source configuration
+
+You can also specify the NATS source configuration using environment variables, which saves you from creating the ConfigMap.
+NATS source checks the environment variable `NATS_CONFIG` for the configuration. The value of the environment variable should be a YAML or JSON string.
+
+See an equivalent example below:
+
+```yaml
+apiVersion: numaflow.numaproj.io/v1alpha1
+kind: Pipeline
+metadata:
+  name: nats-source-e2e
+spec:
+  vertices:
+    - name: in
+      scale:
+        min: 2
+      volumes:
+        - name: my-secret-mount
+          secret:
+            secretName: nats-auth-fake-token
+      source:
+        udsource:
+          container:
+            image: quay.io/numaio/numaflow-source/nats-source:v0.5.10
+            env:
+              - name: NATS_CONFIG
+                value: |
+                  url: nats
+                  subject: test-subject
+                  queue: my-queue
+                  auth:
+                    token:
+                      localobjectreference:
+                        name: nats-auth-fake-token
+                      key: fake-token
+            volumeMounts:
+              - name: my-secret-mount
+                mountPath: /etc/secrets/nats-auth-fake-token
+    - name: out
+      scale:
+        min: 1
+      sink:
+        log: {}
+  edges:
+    - from: in
+      to: out
+```
 
 ## Debugging NATS Source
 To debug the NATS source, you can set the `NUMAFLOW_DEBUG` environment variable to `true` in the NATS source container.
