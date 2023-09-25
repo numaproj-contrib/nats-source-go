@@ -22,7 +22,7 @@ func main() {
 		format = "yaml"
 	}
 
-	var config *config.NatsConfig
+	var config *config.Config
 	var err error
 
 	config, err = getConfigFromEnvVars(format)
@@ -49,7 +49,7 @@ func main() {
 	}
 }
 
-func getConfigFromFile(format string) (*config.NatsConfig, error) {
+func getConfigFromFile(format string) (*config.Config, error) {
 	if format == "yaml" {
 		parser := &config.YAMLConfigParser{}
 		content, err := os.ReadFile(fmt.Sprintf("%s/nats-config.yaml", utils.ConfigVolumePath))
@@ -69,7 +69,7 @@ func getConfigFromFile(format string) (*config.NatsConfig, error) {
 	}
 }
 
-func getConfigFromEnvVars(format string) (*config.NatsConfig, error) {
+func getConfigFromEnvVars(format string) (*config.Config, error) {
 	var c string
 	c, ok := os.LookupEnv("NATS_CONFIG")
 	if !ok {

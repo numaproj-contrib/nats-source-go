@@ -15,15 +15,15 @@ func TestConfigParser_UnParseThenParse(t *testing.T) {
 		&YAMLConfigParser{},
 	}
 	for _, parser := range parsers {
-		testConfig := &NatsConfig{
+		testConfig := &Config{
 			URL:     "nats",
 			Subject: "test-subject",
 			Queue:   "my-queue",
-			TLS: &NatsTLS{
+			TLS: &TLS{
 				InsecureSkipVerify: true,
 			},
-			Auth: &UDNatsAuth{
-				Basic: &NatsBasicAuth{
+			Auth: &Auth{
+				Basic: &BasicAuth{
 					User: &corev1.SecretKeySelector{
 						LocalObjectReference: corev1.LocalObjectReference{
 							Name: "nats-auth-fake-token",
@@ -35,8 +35,6 @@ func TestConfigParser_UnParseThenParse(t *testing.T) {
 		}
 		configStr, err := parser.UnParse(testConfig)
 		assert.NoError(t, err)
-		print("KERAN")
-		println(configStr)
 		config, err := parser.Parse(configStr)
 		assert.NoError(t, err)
 		assert.Equal(t, testConfig, config)
@@ -75,15 +73,15 @@ auth:
 	parser := &YAMLConfigParser{}
 	config, err := parser.Parse(yamlStr)
 	assert.NoError(t, err)
-	assert.True(t, reflect.DeepEqual(&NatsConfig{
+	assert.True(t, reflect.DeepEqual(&Config{
 		URL:     "nats",
 		Subject: "test-subject",
 		Queue:   "my-queue",
-		TLS: &NatsTLS{
+		TLS: &TLS{
 			InsecureSkipVerify: true,
 		},
-		Auth: &UDNatsAuth{
-			Basic: &NatsBasicAuth{
+		Auth: &Auth{
+			Basic: &BasicAuth{
 				User: &corev1.SecretKeySelector{
 					LocalObjectReference: corev1.LocalObjectReference{
 						Name: "nats-auth-fake-token",
@@ -117,15 +115,15 @@ func TestConfigParser_JSON(t *testing.T) {
 	parser := &JSONConfigParser{}
 	config, err := parser.Parse(jsonStr)
 	assert.NoError(t, err)
-	assert.True(t, reflect.DeepEqual(&NatsConfig{
+	assert.True(t, reflect.DeepEqual(&Config{
 		URL:     "nats",
 		Subject: "test-subject",
 		Queue:   "my-queue",
-		TLS: &NatsTLS{
+		TLS: &TLS{
 			InsecureSkipVerify: true,
 		},
-		Auth: &UDNatsAuth{
-			Basic: &NatsBasicAuth{
+		Auth: &Auth{
+			Basic: &BasicAuth{
 				User: &corev1.SecretKeySelector{
 					LocalObjectReference: corev1.LocalObjectReference{
 						Name: "nats-auth-fake-token",
