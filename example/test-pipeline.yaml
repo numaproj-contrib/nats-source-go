@@ -14,7 +14,7 @@ spec:
       source:
         udsource:
           container:
-            image: quay.io/numaio/numaflow-source/nats-source:v0.5.8
+            image: quay.io/numaio/numaflow-source/nats-source:v0.5.9
             env:
               - name: NATS_CONFIG
                 value: |
@@ -30,6 +30,8 @@ spec:
               - name: my-secret-mount
                 mountPath: /etc/secrets/nats-auth-fake-token
     - name: out
+      scale:
+        min: 1
       sink:
         log: {}
   edges:
