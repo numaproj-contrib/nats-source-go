@@ -14,8 +14,7 @@ import (
 	sourcesdk "github.com/numaproj/numaflow-go/pkg/sourcer"
 	"github.com/stretchr/testify/assert"
 
-	"nats-source-go/pkg/config"
-	"nats-source-go/pkg/utils"
+	"github.com/numaproj-contrib/nats-source-go/pkg/config"
 )
 
 type TestReadRequest struct {
@@ -48,7 +47,7 @@ func Test_Single(t *testing.T) {
 		Queue:   testQueue,
 	}
 
-	ns, err := New(config, WithLogger(utils.NewLogger()))
+	ns, err := New(config)
 	defer ns.Close()
 	assert.NoError(t, err)
 	assert.NotNil(t, ns)
@@ -86,12 +85,12 @@ func Test_Multiple(t *testing.T) {
 		Queue:   testQueue,
 	}
 
-	ns1, err := New(config, WithLogger(utils.NewLogger()))
+	ns1, err := New(config)
 	defer ns1.Close()
 	assert.NoError(t, err)
 	assert.NotNil(t, ns1)
 
-	ns2, err := New(config, WithLogger(utils.NewLogger()))
+	ns2, err := New(config)
 	defer ns2.Close()
 	assert.NoError(t, err)
 	assert.NotNil(t, ns2)

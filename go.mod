@@ -1,4 +1,4 @@
-module nats-source-go
+module github.com/numaproj-contrib/nats-source-go
 
 go 1.21
 

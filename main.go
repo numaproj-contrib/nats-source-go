@@ -8,9 +8,9 @@ import (
 
 	"github.com/numaproj/numaflow-go/pkg/sourcer"
 
-	"nats-source-go/pkg/config"
-	"nats-source-go/pkg/nats"
-	"nats-source-go/pkg/utils"
+	"github.com/numaproj-contrib/nats-source-go/pkg/config"
+	"github.com/numaproj-contrib/nats-source-go/pkg/nats"
+	"github.com/numaproj-contrib/nats-source-go/pkg/utils"
 )
 
 func main() {

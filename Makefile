@@ -8,7 +8,7 @@ build: test
 
 .PHONY: image
 image: build
-	docker build -t "quay.io/numaio/numaflow-source/nats-source:v0.5.6" --target nats-source .
+	docker build -t "quay.io/numaio/numaflow-source/nats-source:v0.5.8" --target nats-source .
 
 clean:
 	-rm -rf ./dist
