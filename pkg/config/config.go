@@ -2,20 +2,20 @@ package config
 
 import corev1 "k8s.io/api/core/v1"
 
-/* Package config defines the configuration for the Nats user-defined source.
+/* Package config defines the configuration for the NATS user-defined source.
 The configuration includes the URL to connect to NATS cluster, the subject onto which messages are published,
-the queue for queue subscription, the TLS configuration for the Nats client and the authentication information.
+the queue for queue subscription, the TLS configuration for the NATS client and the authentication information.
 */
 
-// NatsConfig represents the configuration for the Nats client.
+// NatsConfig represents the configuration for the NATS client.
 type NatsConfig struct {
-	// URL to connect to Nats cluster, multiple urls could be separated by comma.
+	// URL to connect to NATS cluster, multiple urls could be separated by comma.
 	URL string `json:"url" protobuf:"bytes,1,opt,name=url"`
 	// Subject holds the name of the subject onto which messages are published.
 	Subject string `json:"subject" protobuf:"bytes,2,opt,name=subject"`
 	// Queue is used for queue subscription.
 	Queue string `json:"queue" protobuf:"bytes,3,opt,name=queue"`
-	// TLS configuration for the Nats client.
+	// TLS configuration for the NATS client.
 	// +optional
 	TLS *NatsTLS `json:"tls" protobuf:"bytes,4,opt,name=tls"`
 	// Auth information
@@ -23,7 +23,7 @@ type NatsConfig struct {
 	Auth *UDNatsAuth `json:"auth,omitempty" protobuf:"bytes,5,opt,name=auth"`
 }
 
-// NatsTLS defines the TLS configuration for the Nats client.
+// NatsTLS defines the TLS configuration for the NATS client.
 type NatsTLS struct {
 	// +optional
 	InsecureSkipVerify bool `json:"insecureSkipVerify,omitempty" protobuf:"bytes,1,opt,name=insecureSkipVerify"`
@@ -48,7 +48,7 @@ type NatsBasicAuth struct {
 	Password *corev1.SecretKeySelector `json:"password,omitempty" protobuf:"bytes,2,opt,name=password"`
 }
 
-// UDNatsAuth represents the authentication information for the Nats client.
+// UDNatsAuth represents the authentication information for the NATS client.
 type UDNatsAuth struct {
 	// Basic auth, which contains a username and a password,
 	// +optional

@@ -70,10 +70,10 @@ func New(c *config.NatsConfig, opts ...Option) (*natsSource, error) {
 		natslib.MaxReconnects(-1),
 		natslib.ReconnectWait(3 * time.Second),
 		natslib.DisconnectHandler(func(c *natslib.Conn) {
-			n.logger.Info("Nats disconnected")
+			n.logger.Info("NATS disconnected")
 		}),
 		natslib.ReconnectHandler(func(c *natslib.Conn) {
-			n.logger.Info("Nats reconnected")
+			n.logger.Info("NATS reconnected")
 		}),
 	}
 
@@ -140,14 +140,14 @@ func New(c *config.NatsConfig, opts ...Option) (*natsSource, error) {
 	} else {
 		n.sub = sub
 	}
-	n.logger.Info("Nats source server started")
+	n.logger.Info("NATS source server started")
 	return n, nil
 }
 
 // Pending returns the number of pending records.
 func (n *natsSource) Pending(_ context.Context) int64 {
-	// The nats source always returns zero to indicate no pending records.
-	return 0
+	// Pending is not supported for NATS for now, returning -1 to indicate pending is not available.
+	return -1
 }
 
 func (n *natsSource) Read(_ context.Context, readRequest sourcesdk.ReadRequest, messageCh chan<- sourcesdk.Message) {
@@ -173,7 +173,7 @@ func (n *natsSource) Read(_ context.Context, readRequest sourcesdk.ReadRequest, 
 
 // Ack acknowledges the data from the source.
 func (n *natsSource) Ack(_ context.Context, request sourcesdk.AckRequest) {
-	// Ack is a no-op for the Nats source.
+	// Ack is a no-op for the NATS source.
 }
 
 func (n *natsSource) Close() error {
@@ -182,6 +182,6 @@ func (n *natsSource) Close() error {
 		n.logger.Error("Failed to unsubscribe nats subscription", zap.Error(err))
 	}
 	n.natsConn.Close()
-	n.logger.Info("Nats source server shutdown")
+	n.logger.Info("NATS source server shutdown")
 	return nil
 }

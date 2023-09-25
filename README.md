@@ -134,7 +134,7 @@ spec:
       source:
         udsource:
           container:
-            image: quay.io/numaio/numaflow-source/nats-source:v0.5.10
+            image: quay.io/numaio/numaflow-source/nats-source-go:v0.5.10
             volumeMounts:
               - name: my-config-mount
                 mountPath: /etc/config
@@ -195,7 +195,7 @@ Adjust your pipeline template to facilitate JSON configuration as shown below:
 source:
   udsource:
     container:
-      image: quay.io/numaio/numaflow-source/nats-source:v0.5.10
+      image: quay.io/numaio/numaflow-source/nats-source-go:v0.5.10
       env:
         - name: CONFIG_FORMAT
           value: json
@@ -229,7 +229,7 @@ spec:
       source:
         udsource:
           container:
-            image: quay.io/numaio/numaflow-source/nats-source:v0.5.10
+            image: quay.io/numaio/numaflow-source/nats-source-go:v0.5.10
             env:
               - name: NATS_CONFIG
                 value: |
@@ -260,7 +260,7 @@ To debug the NATS source, you can set the `NUMAFLOW_DEBUG` environment variable 
 source:
   udsource:
     container:
-      image: quay.io/numaio/numaflow-source/nats-source:v0.5.10
+      image: quay.io/numaio/numaflow-source/nats-source-go:v0.5.10
       env:
         - name: NUMAFLOW_DEBUG
           value: "true"
