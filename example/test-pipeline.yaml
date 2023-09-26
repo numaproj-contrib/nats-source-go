@@ -17,13 +17,15 @@ spec:
       source:
         udsource:
           container:
-            image: quay.io/numaio/numaflow-source/nats-source-go:v0.5.0
+            image: quay.io/numaio/numaflow-source/nats-source-go:v0.99.0
             volumeMounts:
               - name: my-config-mount
                 mountPath: /etc/config
               - name: my-secret-mount
                 mountPath: /etc/secrets/nats-auth-fake-token
     - name: out
+      scale:
+        min: 1
       sink:
         log: {}
   edges:

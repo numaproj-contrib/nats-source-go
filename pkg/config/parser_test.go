@@ -16,9 +16,9 @@ func TestConfigParser_UnParseThenParse(t *testing.T) {
 	}
 	for _, parser := range parsers {
 		testConfig := &Config{
-			URL:     "nats://localhost:4222",
-			Subject: "test",
-			Queue:   "test",
+			URL:     "nats",
+			Subject: "test-subject",
+			Queue:   "my-queue",
 			TLS: &TLS{
 				InsecureSkipVerify: true,
 			},
@@ -26,9 +26,9 @@ func TestConfigParser_UnParseThenParse(t *testing.T) {
 				Basic: &BasicAuth{
 					User: &corev1.SecretKeySelector{
 						LocalObjectReference: corev1.LocalObjectReference{
-							Name: "test",
+							Name: "nats-auth-fake-token",
 						},
-						Key: "test",
+						Key: "fake-token",
 					},
 				},
 			},
@@ -61,11 +61,14 @@ func TestConfigParser_YAML(t *testing.T) {
 url: nats
 subject: test-subject
 queue: my-queue
+tls:
+  insecureskipverify: true
 auth:
-  token:
-    localobjectreference:
-      name: nats-auth-fake-token
-    key: fake-token
+  basic:
+    user:
+      localobjectreference:
+        name: nats-auth-fake-token
+      key: fake-token
 `
 	parser := &YAMLConfigParser{}
 	config, err := parser.Parse(yamlStr)
@@ -74,12 +77,17 @@ auth:
 		URL:     "nats",
 		Subject: "test-subject",
 		Queue:   "my-queue",
+		TLS: &TLS{
+			InsecureSkipVerify: true,
+		},
 		Auth: &Auth{
-			Token: &corev1.SecretKeySelector{
-				LocalObjectReference: corev1.LocalObjectReference{
-					Name: "nats-auth-fake-token",
+			Basic: &BasicAuth{
+				User: &corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: "nats-auth-fake-token",
+					},
+					Key: "fake-token",
 				},
-				Key: "fake-token",
 			},
 		},
 	}, config))
@@ -88,15 +96,20 @@ auth:
 func TestConfigParser_JSON(t *testing.T) {
 	jsonStr := `
 {
-  "url":"nats",
-  "subject":"test-subject",
-  "queue":"my-queue",
-  "auth":{
-    "token":{
-      "name":"nats-auth-fake-token",
-      "key":"fake-token"
-    }
-  }
+   "url":"nats",
+   "subject":"test-subject",
+   "queue":"my-queue",
+   "tls":{
+      "insecureSkipVerify":true
+   },
+   "auth":{
+      "basic":{
+         "user":{
+            "name":"nats-auth-fake-token",
+            "key":"fake-token"
+         }
+      }
+   }
 }
 `
 	parser := &JSONConfigParser{}
@@ -106,12 +119,17 @@ func TestConfigParser_JSON(t *testing.T) {
 		URL:     "nats",
 		Subject: "test-subject",
 		Queue:   "my-queue",
+		TLS: &TLS{
+			InsecureSkipVerify: true,
+		},
 		Auth: &Auth{
-			Token: &corev1.SecretKeySelector{
-				LocalObjectReference: corev1.LocalObjectReference{
-					Name: "nats-auth-fake-token",
+			Basic: &BasicAuth{
+				User: &corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: "nats-auth-fake-token",
+					},
+					Key: "fake-token",
 				},
-				Key: "fake-token",
 			},
 		},
 	}, config))

@@ -7,9 +7,9 @@ import (
 
 	"github.com/numaproj/numaflow-go/pkg/sourcer"
 
-	"nats-source-go/pkg/config"
-	"nats-source-go/pkg/nats"
-	"nats-source-go/pkg/utils"
+	"github.com/numaproj-contrib/nats-source-go/pkg/config"
+	"github.com/numaproj-contrib/nats-source-go/pkg/nats"
+	"github.com/numaproj-contrib/nats-source-go/pkg/utils"
 )
 
 func main() {
@@ -22,14 +22,22 @@ func main() {
 		format = "yaml"
 	}
 
-	config, err := getConfigFromFile(format)
+	var config *config.Config
+	var err error
+
+	config, err = getConfigFromEnvVars(format)
 	if err != nil {
-		logger.Panic("Failed to parse config file : ", err)
+		config, err = getConfigFromFile(format)
+		if err != nil {
+			logger.Panic("Failed to parse config file : ", err)
+		} else {
+			logger.Info("Successfully parsed config file")
+		}
 	} else {
-		logger.Info("Successfully parsed config file")
+		logger.Info("Successfully parsed config from env vars")
 	}
 
-	natsSrc, err := nats.New(config, nats.WithLogger(logger))
+	natsSrc, err := nats.New(config)
 	if err != nil {
 		logger.Panic("Failed to create nats source : ", err)
 	}
@@ -56,6 +64,23 @@ func getConfigFromFile(format string) (*config.Config, error) {
 			return nil, err
 		}
 		return parser.Parse(string(content))
+	} else {
+		return nil, fmt.Errorf("invalid config format %s", format)
+	}
+}
+
+func getConfigFromEnvVars(format string) (*config.Config, error) {
+	var c string
+	c, ok := os.LookupEnv("NATS_CONFIG")
+	if !ok {
+		return nil, fmt.Errorf("NATS_CONFIG environment variable is not set")
+	}
+	if format == "yaml" {
+		parser := &config.YAMLConfigParser{}
+		return parser.Parse(c)
+	} else if format == "json" {
+		parser := &config.JSONConfigParser{}
+		return parser.Parse(c)
 	} else {
 		return nil, fmt.Errorf("invalid config format %s", format)
 	}

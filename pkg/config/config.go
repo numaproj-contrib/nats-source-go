@@ -1,8 +1,6 @@
 package config
 
-import (
-	corev1 "k8s.io/api/core/v1"
-)
+import corev1 "k8s.io/api/core/v1"
 
 /* Package config defines the configuration for the NATS user-defined source.
 The configuration includes the URL to connect to NATS cluster, the subject onto which messages are published,

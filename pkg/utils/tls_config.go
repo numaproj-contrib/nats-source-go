@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"nats-source-go/pkg/config"
+	"github.com/numaproj-contrib/nats-source-go/pkg/config"
 )
 
 // TODO - unit test the following function

@@ -10,8 +10,8 @@ import (
 	sourcesdk "github.com/numaproj/numaflow-go/pkg/sourcer"
 	"go.uber.org/zap"
 
-	"nats-source-go/pkg/config"
-	"nats-source-go/pkg/utils"
+	"github.com/numaproj-contrib/nats-source-go/pkg/config"
+	"github.com/numaproj-contrib/nats-source-go/pkg/utils"
 )
 
 const (
@@ -33,13 +33,13 @@ type natsSource struct {
 
 	volumeReader utils.VolumeReader
 
-	logger *zap.SugaredLogger
+	logger *zap.Logger
 }
 
 type Option func(*natsSource) error
 
 // WithLogger is used to return logger information
-func WithLogger(l *zap.SugaredLogger) Option {
+func WithLogger(l *zap.Logger) Option {
 	return func(o *natsSource) error {
 		o.logger = l
 		return nil
@@ -53,6 +53,13 @@ func New(c *config.Config, opts ...Option) (*natsSource, error) {
 	for _, o := range opts {
 		if err := o(n); err != nil {
 			return nil, err
+		}
+	}
+	if n.logger == nil {
+		var err error
+		n.logger, err = zap.NewDevelopment()
+		if err != nil {
+			return nil, fmt.Errorf("failed to create logger, %w", err)
 		}
 	}
 
@@ -117,7 +124,7 @@ func New(c *config.Config, opts ...Option) (*natsSource, error) {
 		n.natsConn = conn
 	}
 
-	n.logger.Infof("Subscribing to subject %s with queue %s", c.Subject, c.Queue)
+	n.logger.Info(fmt.Sprintf("Subscribing to subject %s with queue %s", c.Subject, c.Queue))
 	if sub, err := n.natsConn.QueueSubscribe(c.Subject, c.Queue, func(msg *natslib.Msg) {
 		readOffset := uuid.New().String()
 		m := &Message{
@@ -139,7 +146,7 @@ func New(c *config.Config, opts ...Option) (*natsSource, error) {
 
 // Pending returns the number of pending records.
 func (n *natsSource) Pending(_ context.Context) int64 {
-	// Pending is not supported for Nats for now, returning -1 to indicate pending is not available.
+	// Pending is not supported for NATS for now, returning -1 to indicate pending is not available.
 	return -1
 }
 
@@ -165,7 +172,7 @@ func (n *natsSource) Read(_ context.Context, readRequest sourcesdk.ReadRequest, 
 }
 
 // Ack acknowledges the data from the source.
-func (n *natsSource) Ack(_ context.Context, _ sourcesdk.AckRequest) {
+func (n *natsSource) Ack(_ context.Context, request sourcesdk.AckRequest) {
 	// Ack is a no-op for the NATS source.
 }
 
