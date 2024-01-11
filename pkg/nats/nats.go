@@ -165,7 +165,7 @@ func (n *natsSource) Read(_ context.Context, readRequest sourcesdk.ReadRequest, 
 			// Otherwise, we read the data from the source and send the data to the message channel.
 			messageCh <- sourcesdk.NewMessage(
 				[]byte(m.payload),
-				sourcesdk.NewOffset([]byte(m.readOffset), 0),
+				sourcesdk.NewOffsetWithDefaultPartitionId([]byte(m.readOffset)),
 				time.Now())
 		}
 	}
